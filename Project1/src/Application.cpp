@@ -199,7 +199,7 @@ int main()
     Shader lightSource("Shaders/lighting.vert", "Shaders/lighting.frag");
 
    
-    std::vector<ModelData> modelData = loadModelDataFromFile("../Project1/src/Model.txt");
+    std::vector<ModelData> modelData = loadModelDataFromFile("Model.txt");
 
     camera.Position = modelData[50].position;
     

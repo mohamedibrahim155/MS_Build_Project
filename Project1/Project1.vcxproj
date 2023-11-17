@@ -204,33 +204,39 @@
   </ImportGroup>
   
    <PropertyGroup>
-    <ModelFile>$(ProjectDir)NeededFiles\Models</ModelFile>
-    <AssimpDLLFile>$(ProjectDir)NeededFiles\AssimpDLL</AssimpDLLFile>
-    <ShaderFile>$(ProjectDir)NeededFiles\Shaders</ShaderFile>
+       <outputFile>$(ProjectDir)Output</outputFile>
+    <ModelFile>$(ProjectDir)Output\Models</ModelFile>
+    <ShaderFile>$(ProjectDir)Output\Shaders</ShaderFile>
+	
   </PropertyGroup>
 
  <ItemGroup>
     <ModelCopyFiles Include="Models\*\**"/>
 	<assimpDLLCopyFile Include="../Dependencies/assimp/**/*.dll"/>
 	<ShaderFileCopyFile Include="Shaders\**\*"/>
+	<ModelExternalFile Include="Model.txt"/>
   </ItemGroup>
 
   <Target Name="CustomBuild" Condition="'$(Configuration)'=='Debug'">
+  
+  
+    <MakeDir Directories="$(outputFile)" />
     <MakeDir Directories="$(ModelFile)" />
-    <Copy SourceFiles="@(ModelCopyFiles)" DestinationFolder="$(ModelFile)" />
-	
-	<MakeDir Directories="$(assimpDLLFile)" />
-    <Copy SourceFiles="@(assimpDLLCopyFile)" DestinationFolder="$(assimpDLLFile)" />
-	
     <MakeDir Directories="$(ShaderFile)" />
+	
+   
+    <Copy SourceFiles="@(ModelExternalFile)" DestinationFolder="$(outputFile)" />
+    <Copy SourceFiles="@(assimpDLLCopyFile)" DestinationFolder="$(outputFile)" />
+	<Copy SourceFiles="@(ModelCopyFiles)" DestinationFolder="$(ModelFile)" />
     <Copy SourceFiles="@(ShaderFileCopyFile)" DestinationFolder="$(ShaderFile)" />
+	
+	
   </Target>
-
 
   <Target Name="AfterBuild" DependsOnTargets="CustomBuild" Condition="'$(Configuration)'=='Debug'">
     <Message Text="Hello, MSBuild!" />
    
-    <Exec Command='"$(ProjectDir)7z.exe" a -r -tzip "$(OutDir)project3.zip" "$(ProjectDir)NeededFiles\*"' />
+<Exec Command='"$(ProjectDir)7z.exe" a -r -tzip "$(ProjectDir)project3.zip" "$(outputFile)\*" "$(OutDir)\*"' />
 
   </Target>
 
