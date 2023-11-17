@@ -204,41 +204,68 @@
   </ImportGroup>
   
    <PropertyGroup>
-       <outputFile>$(ProjectDir)Output</outputFile>
-    <ModelFile>$(ProjectDir)Output\Models</ModelFile>
-    <ShaderFile>$(ProjectDir)Output\Shaders</ShaderFile>
+   
+     <outputFile>$(OutDir)</outputFile>
+	 
+    <SphereFile>$(OutDir)Models\DefaultSphere\</SphereFile>
+    <DungeonFile>$(OutDir)Models\Dungeon\</DungeonFile>  
+    <PokeballFile>$(OutDir)Models\Pokeball\</PokeballFile>
+    <TorchFile>$(OutDir)Models\Torch\</TorchFile>
+	
+    <ShaderFile>$(OutDir)Shaders</ShaderFile>
 	
   </PropertyGroup>
 
  <ItemGroup>
-    <ModelCopyFiles Include="Models\*\**"/>
+    <SphereCopyFiles Include="Models\DefaultSphere\**"/>
+    <DungeonCopyFiles Include="Models\Dungeon\**"/>
+    <PokeballCopyFiles Include="Models\Pokeball\**"/>
+    <TorchCopyFiles Include="Models\Torch\**"/>
+	
+	
 	<assimpDLLCopyFile Include="../Dependencies/assimp/**/*.dll"/>
 	<ShaderFileCopyFile Include="Shaders\**\*"/>
 	<ModelExternalFile Include="Model.txt"/>
   </ItemGroup>
 
-  <Target Name="CustomBuild" Condition="'$(Configuration)'=='Debug'">
+  <Target Name="CustomBuild" Condition="'$(Configuration)'=='Release'">
   
   
     <MakeDir Directories="$(outputFile)" />
-    <MakeDir Directories="$(ModelFile)" />
+	
+    <MakeDir Directories="$(SphereFile)" />
+    <MakeDir Directories="$(DungeonFile)" />
+    <MakeDir Directories="$(PokeballFile)" />
+    <MakeDir Directories="$(TorchFile)" />
     <MakeDir Directories="$(ShaderFile)" />
 	
    
     <Copy SourceFiles="@(ModelExternalFile)" DestinationFolder="$(outputFile)" />
     <Copy SourceFiles="@(assimpDLLCopyFile)" DestinationFolder="$(outputFile)" />
-	<Copy SourceFiles="@(ModelCopyFiles)" DestinationFolder="$(ModelFile)" />
+	
+	<Copy SourceFiles="@(SphereCopyFiles)" DestinationFolder="$(SphereFile)" />
+	<Copy SourceFiles="@(DungeonCopyFiles)" DestinationFolder="$(DungeonFile)" />
+	<Copy SourceFiles="@(PokeballCopyFiles)" DestinationFolder="$(PokeballFile)" />
+	<Copy SourceFiles="@(TorchCopyFiles)" DestinationFolder="$(TorchFile)" />
+
+	
     <Copy SourceFiles="@(ShaderFileCopyFile)" DestinationFolder="$(ShaderFile)" />
 	
+	 <Copy SourceFiles="$(OutputPath)$(AssemblyName).exe" DestinationFolder="$(OutputFile)" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(OutputFile)" />
+	
 	
   </Target>
 
-  <Target Name="AfterBuild" DependsOnTargets="CustomBuild" Condition="'$(Configuration)'=='Debug'">
+  <Target Name="AfterBuild" DependsOnTargets="CustomBuild" Condition="'$(Configuration)'=='Release'">
+
     <Message Text="Hello, MSBuild!" />
-   
-<Exec Command='"$(ProjectDir)7z.exe" a -r -tzip "$(ProjectDir)project3.zip" "$(outputFile)\*" "$(OutDir)\*"' />
+	
+<Exec Command='"$(ProjectDir)7z.exe" a -r -tzip "$(ProjectDir)project3.zip"  "$(OutputFile)\*"'/>
+  
 
   </Target>
+
 
 
 </Project>
